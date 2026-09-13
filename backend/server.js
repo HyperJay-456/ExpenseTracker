@@ -1,0 +1,36 @@
+import express from 'express';
+import cors from 'cors';
+import 'dotenv/config';
+import userRouter from './routes/userRoute.js';
+import { connectDB } from './config/db.js';
+import dns from 'dns';
+import incomeRouter from './routes/incomeRoute.js';
+import expenseRouter from './routes/expenseRoute.js';
+import dashboardRouter from './routes/dashboardRouter.js';
+
+dns.setServers(["1.1.1.1", "8.8.8.8"])
+
+const app = express();
+const port = 4000;
+
+// Middlewares 
+app.use(cors());
+app.use(express.json()); 
+app.use(express.urlencoded({extended: true}));
+
+//DB
+connectDB();
+
+//Routes
+app.use("/api/user", userRouter)
+app.use("/api/income", incomeRouter);
+app.use("/api/expense", expenseRouter);
+app.use("/api/dashboard", dashboardRouter);
+
+app.get('/', (req, res) => {
+    res.send("API Working!!!!");
+});
+
+app.listen(port, () => {
+    console.log(`Server Started on http://localhost:${port}`);
+});
